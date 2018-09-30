@@ -1,2 +1,11 @@
-# distilling_sensor_node
-raspberry pi based sensor node for distilling
+# Distilling Sensor Node
+
+Raspberry pi based sensor node for distilling.
+
+Sensors:
+- Temperature (upper and lower)
+- VOC / alcohol
+
+Displays:
+- Upper temperature
+- Lower temperature
