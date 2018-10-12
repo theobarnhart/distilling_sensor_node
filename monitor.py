@@ -1,4 +1,4 @@
-import common
+from common import *
 import board
 
 # parameters
