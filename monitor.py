@@ -4,7 +4,7 @@ import board
 # parameters
 upperPin = board.D5
 #lowerPin = board.D6?
-db = '~/distDat.db'
+db = '/home/pi/distDat.db'
 upperTemp = 'upperTemp'
 lowerTemp = 'lowerTemp'
 
