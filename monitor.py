@@ -27,7 +27,7 @@ while True:
         insert_db(db, upperTemp, upperReading) # read upper temperature
         insert_db(db, lowerTemp, lowerReading) # read the lower temperature
     
-        print_message(["U: %s"%(upperReading),"L: %s"%(lowerReading)],disp,draw,font,width,height,image)
+        print_message(["U: %s"%(round(upperReading,1)),"L: %s"%(round(lowerReading,1))],disp,draw,font,width,height,image)
         
         # reset the counter
         upper = []
