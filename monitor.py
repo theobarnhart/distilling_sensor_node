@@ -1,6 +1,7 @@
 from common import *
 import board
 import time
+import numpy as np
 
 # parameters
 upperPin = board.D5
@@ -12,15 +13,29 @@ lowerTemp = 'lowerTemp'
 fontsize=18
 
 disp,draw,font,width,height,image = initialize_display(fontsize)
-
+ct = 0
+upper = []
+lower = []
 while True:
-    lowerReading = read_temperature(lowerPin)
-    upperReading = read_temperature(upperPin)
+    upper.append(read_temperature(upperPin))
+    lower.append(read_temperature(lowerPin))
     
-    insert_db(db, upperTemp, upperReading) # read upper temperature
-    insert_db(db, lowerTemp, lowerReading) # read the lower temperature
+    if ct == 29:
+        upperReading = np.mean(upper)
+        lowerReading = np.mean(lower)
+        
+        insert_db(db, upperTemp, upperReading) # read upper temperature
+        insert_db(db, lowerTemp, lowerReading) # read the lower temperature
     
-    print_message(["U: %s"%(upperReading),"L: %s"%(lowerReading)],disp,draw,font,width,height,image)
+        print_message(["U: %s"%(upperReading),"L: %s"%(lowerReading)],disp,draw,font,width,height,image)
+        
+        # reset the counter
+        upper = []
+        lower = []
+        ct = 0
     
-    time.sleep(10)
+    else:
+        ct += 1
+    
+    time.sleep(1)
     
