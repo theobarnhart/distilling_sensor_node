@@ -69,9 +69,9 @@ def initialize_display():
     
     font = ImageFont.load_default()
     
-    return disp,draw,font,width,height
+    return disp,draw,font,width,height,image
 
-def print_message(message,disp,draw,font,width,height):
+def print_message(message,disp,draw,font,width,height,image):
     '''
     Inputs:
         message - list of lines to print.
