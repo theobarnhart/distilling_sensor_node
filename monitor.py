@@ -30,7 +30,7 @@ while True:
     upper2.append(upperT)
     lower2.append(lowerT)
     
-    if ct == 29:
+    if ct == 899:
         upperReading = np.mean(upper)
         lowerReading = np.mean(lower)
         
