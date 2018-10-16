@@ -58,8 +58,8 @@ def initialize_display():
     # Make sure to create image with mode '1' for 1-bit color.
     #width = disp.width
     #height = disp.height
-    width = 64
-    height = 16
+    width = 128
+    height = 64
     image = Image.new('1', (width, height))
     
     draw = ImageDraw.Draw(image) # Get drawing object to draw on image.
