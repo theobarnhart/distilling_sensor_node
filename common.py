@@ -59,7 +59,7 @@ def initialize_display():
     #width = disp.width
     #height = disp.height
     width = 128
-    height = 64
+    height = 32
     image = Image.new('1', (width, height))
     
     draw = ImageDraw.Draw(image) # Get drawing object to draw on image.
