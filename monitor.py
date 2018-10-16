@@ -53,6 +53,7 @@ while True:
         
     else:
         
+        ct2 += 1
         ct += 1
     
     time.sleep(1)
