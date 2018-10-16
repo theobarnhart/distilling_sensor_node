@@ -9,7 +9,7 @@ lowerPin = board.D6
 db = '/home/pi/distDat.db'
 upperTemp = 'upperTemp'
 lowerTemp = 'lowerTemp'
-fontsize=22
+fontsize=18
 
 disp,draw,font,width,height,image = initialize_display(fontsize)
 
