@@ -43,7 +43,7 @@ def insert_db(db,table,value):
     
     return None
     
-def initialize_display():
+def initialize_display(fontSize):
     RST = None
     # 128x32 display with hardware I2C:
     disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
@@ -67,7 +67,7 @@ def initialize_display():
     # Draw a black filled box to clear the image.
     draw.rectangle((0,0,width,height), outline=0, fill=0)
     
-    font = ImageFont.truetype(font='/home/pi/fonts/gameovercre1.ttf',size=12)
+    font = ImageFont.truetype(font='/home/pi/fonts/gameovercre1.ttf',size=fontSize)
     
     return disp,draw,font,width,height,image
 
