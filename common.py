@@ -67,7 +67,7 @@ def initialize_display():
     # Draw a black filled box to clear the image.
     draw.rectangle((0,0,width,height), outline=0, fill=0)
     
-    font = ImageFont.load_default()
+    font = ImageFont.truetype(font='/home/pi/fonts/gameovercre1.ttf',size=12)
     
     return disp,draw,font,width,height,image
 
