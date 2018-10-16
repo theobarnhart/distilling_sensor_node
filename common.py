@@ -87,7 +87,8 @@ def print_message(message,disp,draw,font,width,height):
  
     # Draw a black filled box to clear the image.
     draw.rectangle((0,0,width,height), outline=0, fill=0)
-
+    x = 0
+    top = 0
     # Write two lines of text.
     for l in message:
         draw.text((0, top),l,  font=font, fill=255)
