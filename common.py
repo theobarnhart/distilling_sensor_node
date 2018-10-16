@@ -97,5 +97,4 @@ def print_message(message,disp,draw,font,width,height,image):
     # Display image.
     disp.image(image)
     disp.display()
-    time.sleep(.1)
     
