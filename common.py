@@ -92,7 +92,7 @@ def print_message(message,disp,draw,font,width,height,image):
     # Write two lines of text.
     for l in message:
         draw.text((0, top),l,  font=font, fill=255)
-        top += 8
+        top += font.size
 
     # Display image.
     disp.image(image)
