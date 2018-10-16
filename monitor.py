@@ -14,11 +14,21 @@ fontsize=18
 
 disp,draw,font,width,height,image = initialize_display(fontsize)
 ct = 0
+ct2 = 0
 upper = []
 lower = []
+
+upper2 = []
+lower2 = []
 while True:
-    upper.append(read_temperature(upperPin))
-    lower.append(read_temperature(lowerPin))
+    upperT = read_temperature(upperPin)
+    lowerT = read_temperature(lowerPin)
+    
+    upper.append(upperT)
+    lower.append(lowerT)
+    
+    upper2.append(upperT)
+    lower2.append(lowerT)
     
     if ct == 29:
         upperReading = np.mean(upper)
@@ -26,15 +36,23 @@ while True:
         
         insert_db(db, upperTemp, upperReading) # read upper temperature
         insert_db(db, lowerTemp, lowerReading) # read the lower temperature
-    
-        print_message(["U: %s"%(round(upperReading,1)),"L: %s"%(round(lowerReading,1))],disp,draw,font,width,height,image)
         
         # reset the counter
         upper = []
         lower = []
         ct = 0
     
+    elif ct2 == 9:
+        upperReading = np.mean(upper2)
+        lowerReading = np.mean(lower2)
+        print_message(["U: %s"%(round(upperReading,1)),"L: %s"%(round(lowerReading,1))],disp,draw,font,width,height,image)
+        
+        ct2 = 0
+        upper2 = []
+        lower2 = []
+        
     else:
+        
         ct += 1
     
     time.sleep(1)
