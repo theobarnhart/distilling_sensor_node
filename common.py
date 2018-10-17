@@ -121,21 +121,21 @@ def read_flow(seconds=30,pin=22, disp=False):
 	startTime = lastTime # save start time
 
 	while deltaSeconds <= seconds:
-  		currentTime = time.time() # read current time
-  		if GPIO.input(pin): # read the pin state
-    		revs.append(1)
-    		if disp: print('1')
-  		else:
-    		revs.append(0)
-    		if disp: print('0')
-    	print()
-    	deltaSeconds = currentTime - lastTime # compute how long the function has been counting
-    	lastTime = currentTime # save the current time for the next iteration
+		currentTime = time.time() # read current time
+		if GPIO.input(pin): # read the pin state
+			revs.append(1)
+			if disp: print('1')
+		else:
+			revs.append(0)
+			if disp: print('0')
+		print()
+		deltaSeconds = currentTime - lastTime # compute how long the function has been counting
+		lastTime = currentTime # save the current time for the next iteration
 
-    rate = float(np.sum(revs)) / float(seconds)
-    middleTime = (startTime + lastTime)/2.
+	rate = float(np.sum(revs)) / float(seconds)
+	middleTime = (startTime + lastTime)/2.
 
-    return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(middleTime)),rate
+	return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(middleTime)),rate
 
 
 
