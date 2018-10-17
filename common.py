@@ -128,7 +128,7 @@ def read_flow(seconds=30,pin=22, disp=False):
 		else:
 			revs.append(0)
 			if disp: print('0')
-		print()
+			
 		deltaSeconds = currentTime - lastTime # compute how long the function has been counting
 		lastTime = currentTime # save the current time for the next iteration
 
