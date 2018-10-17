@@ -9,7 +9,8 @@ import Adafruit_SSD1306
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-
+import RPi.GPIO as GPIO
+import time
 
 def read_temperature(pin,wires=3):
     '''
@@ -98,3 +99,46 @@ def print_message(message,disp,draw,font,width,height,image):
     disp.image(image)
     disp.display()
     
+def read_flow(seconds=30,pin=22, disp=False):
+	'''
+	Inputs:
+		seconds - duration of time to monitor flow, defaults to 30.
+		pin - GPIO pin to read (int).
+		disp - display results (bool).
+
+	Returns:
+		time - the center of the interval over which the measurement was made
+		rate - revolutions per second
+
+	'''
+	# initialize the 
+	boardRevision = GPIO.RPI_REVISION
+	GPIO.setmode(GPIO.BCM) # use real GPIO numbering
+	GPIO.setup(pin,GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	revs = [] # container for revolutions
+	deltaSeconds = 0
+	lastTime = time.time()
+	startTime = lastTime # save start time
+
+	while deltaSeconds <= seconds:
+  		currentTime = time.time() # read current time
+  		if GPIO.input(pin): # read the pin state
+    		revs.append(1)
+    		if disp: print('1')
+  		else:
+    		revs.append(0)
+    		if disp: print('0')
+    	print()
+    	deltaSeconds = currentTime - lastTime # compute how long the function has been counting
+    	lastTime = currentTime # save the current time for the next iteration
+
+    rate = float(np.sum(revs)) / float(seconds)
+    middleTime = (startTime + lastTime)/2.
+
+    return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(middleTime)),rate
+
+
+
+
+
+
