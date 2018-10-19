@@ -119,7 +119,7 @@ def read_flow(seconds=30,pin=22, disp=False):
 	deltaSeconds = 0
 	lastTime = time.time()
 	startTime = lastTime # save start time
-
+	print("Starting Count")
 	while deltaSeconds <= seconds:
 		currentTime = time.time() # read current time
 		if GPIO.input(pin): # read the pin state
