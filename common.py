@@ -133,6 +133,7 @@ def read_flow(seconds=30,pin=22, disp=False):
 			lastTime = currentTime # save the current time for the next iteration
 			if disp: print('0')
 
+	print(deltaSeconds)
 	rate = float(np.sum(revs)) / float(seconds)
 	middleTime = (startTime + lastTime)/2.
 
