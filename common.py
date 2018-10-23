@@ -3,14 +3,17 @@
 import board
 import busio
 import digitalio
-import adafruit_max31865
 import sqlite3
+import adafruit_max31865
+import adafruit_ccs811
 import Adafruit_SSD1306
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 import RPi.GPIO as GPIO
 import time
+import os
+from slackclient import SlackClient
 
 def read_temperature(pin,wires=3):
     '''
@@ -158,7 +161,39 @@ def read_flow(seconds=30,pin=22, disp=False):
 	if disp: print(round(litersPoured,2))
 	return litersPoured
 
-#def send2slack():
+def read_atm():
+	i2c = busio.I2C(board.SCL, board.SDA)
+	ccs811 = adafruit_ccs811.CCS811(i2c)
+	# Wait for the sensor to be ready and calibrate the thermistor
+	while not ccs811.data_ready:
+    	pass
+	
+	
+	temp = ccs811.temperature # deg C
+	voc = ccs811.tvoc # PPM
+	eco2 = ccs811.eco2 # PPM
+
+	return temp,voc,eco2
+
+def send2slack(message, channel):
+	'''
+	Sends a message to slack given an api token in the environment variable
+	
+	Inputs:
+		message - message to post to channel (string)
+		channel - channel to post to (string)
+
+	Returns:
+		None
+	'''
+	slack_token = os.environ["SLACK_API_TOKEN"]
+	sc = SlackClient(slack_token)
+
+	sc.api_call(
+  		"chat.postMessage",
+  		channel=channel,
+  		text=message
+	)
 
 
 
