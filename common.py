@@ -129,7 +129,7 @@ def read_flow(seconds=30,pin=22, disp=False):
 
 		if(pinState != lastPinState and pinState == True):
 			if(pouring == False):
-	  			pourStart = currentTime
+				pourStart = currentTime
 				pouring = True
 		# get the current time
 			pinChange = currentTime
