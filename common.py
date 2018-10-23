@@ -115,8 +115,18 @@ def read_flow(seconds=30,pin=22, disp=False):
 	boardRevision = GPIO.RPI_REVISION
 	GPIO.setmode(GPIO.BCM) # use real GPIO numbering
 	GPIO.setup(pin,GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	revs = [] # container for revolutions
+
+	lastPinState = False
+	pinState = 0
+	lastPinChange = int(time.time() * 1000)
+	pourStart = 0
+	pinChange = lastPinChange
+	pinDelta = 0
+	hertz = 0
+	flow = 0
+	litersPoured = 0
 	deltaSeconds = 0
+
 	lastTime = time.time()
 	startTime = lastTime # save start time
 	print("Starting Count")
