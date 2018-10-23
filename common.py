@@ -147,7 +147,9 @@ def read_flow(seconds=30,pin=22, disp=False):
 
 		now = time.time()
 		deltaSeconds = now - startTime
-		if disp: print(deltaSeconds)
+		if disp: 
+			print(round(deltaSeconds),3)
+			print(pinDelta)
 
 	# calculate the instantaneous speed
 	hertz = 1000.0000 / pinDelta
