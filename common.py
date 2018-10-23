@@ -118,47 +118,49 @@ def read_flow(seconds=30,pin=22, disp=False):
 
 	lastPinState = False
 	pinState = 0
-	lastPinChange = int(time.time() * 1000)
-	pourStart = 0
+	lastPinChange = int(time.time() * 1000) # read time and convert to integer
 	pinChange = lastPinChange
 	pinDelta = 0
 	hertz = 0
 	flow = 0
 	litersPoured = 0
 	deltaSeconds = 0
+	revs = 0
 
 	lastTime = time.time()
 	startTime = lastTime # save start time
 	if disp: print("Starting Count")
-	while deltaSeconds <= seconds:
-		currentTime = int(time.time() * 1000)
+	while deltaSeconds <= seconds: # while the elapsed time less than the measurement period
+		currentTime = int(time.time() * 1000) # read the time, convert to an integer
+		
+		# read the pin state
 		if GPIO.input(pin):
 			pinState = True
 		else:
 			pinState = False
 
-		if(pinState != lastPinState and pinState == True):
-			if(pouring == False):
-				pourStart = currentTime
-				pouring = True
-		# get the current time
+		if(pinState != lastPinState and pinState == True): # if the pin is different than before and is high
+			# get the current time
 			pinChange = currentTime
-			pinDelta = pinChange - lastPinChange
+			pinDelta = pinChange - lastPinChange # compute the change in time since the last revolution 
+			hertz = 1000.0000 / pinDelta # cycles / second
+			flow = hertz / (60 * 7.5) # L/s, compute rate
+			litersPoured += flow * (pinDelta / 1000.0000) # rate * (pinDelta /1000), conver delta back to seconds
 
-		lastPinChange = pinChange
+			lastPinChange = pinChange # save the last pin change time
+
+		lastPinState = pinState # save the current pin state
 		now = time.time()
 		deltaSeconds = now - startTime
-		if disp: 
-			print(round(deltaSeconds,3))
-			print(pinDelta)
+		
+		if disp: print('%s seconds: %s liters'%(round(deltaSeconds,3),round(litersPoured,2)))
 
 
-	if pinDelta == 0: # if there are no counts:
+	if litersPoured == 0: # if there are no counts:
 		return 0
 	else: # calculate the instantaneous speed
-		hertz = 1000.0000 / pinDelta
-		flow = hertz / (60 * 7.5) # L/s
-		litersPoured += flow * (pinDelta / 1000.0000)
+		
+		if disp: print(litersPoured)
 		return litersPoured
 
 #def send2slack():
