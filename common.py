@@ -146,7 +146,7 @@ def read_flow(seconds=30,pin=22, disp=False):
 			pinDelta = pinChange - lastPinChange
 
 		now = time.time()
-		deltaSeconds = startTime - now
+		deltaSeconds = now - startTime
 		if disp: print(deltaSeconds)
 
 	# calculate the instantaneous speed
