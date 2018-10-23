@@ -152,12 +152,14 @@ def read_flow(seconds=30,pin=22, disp=False):
 			print(round(deltaSeconds,3))
 			print(pinDelta)
 
-	# calculate the instantaneous speed
-	hertz = 1000.0000 / pinDelta
-	flow = hertz / (60 * 7.5) # L/s
-	litersPoured += flow * (pinDelta / 1000.0000)
 
-	return litersPoured
+	if pinDelta == 0: # if there are no counts:
+		return 0
+	else: # calculate the instantaneous speed
+		hertz = 1000.0000 / pinDelta
+		flow = hertz / (60 * 7.5) # L/s
+		litersPoured += flow * (pinDelta / 1000.0000)
+		return litersPoured
 
 #def send2slack():
 
