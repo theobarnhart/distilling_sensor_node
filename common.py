@@ -122,30 +122,30 @@ def read_flow(seconds=30,pin=22, disp=False):
 	print("Starting Count")
 	while deltaSeconds <= seconds:
 		currentTime = int(time.time() * 1000)
-  		if GPIO.input(22):
-    		pinState = True
-  		else:
-    		pinState = False
+		if GPIO.input(pin):
+			pinState = True
+		else:
+			pinState = False
 
-    	if(pinState != lastPinState and pinState == True):
-    		if(pouring == False):
-      			pourStart = currentTime
-    			pouring = True
-    	# get the current time
-    		pinChange = currentTime
-    		pinDelta = pinChange - lastPinChange
+		if(pinState != lastPinState and pinState == True):
+			if(pouring == False):
+	  			pourStart = currentTime
+				pouring = True
+		# get the current time
+			pinChange = currentTime
+			pinDelta = pinChange - lastPinChange
 
-    	now = time.time()
-    	deltaSeconds = startTime - now
+		now = time.time()
+		deltaSeconds = startTime - now
 
-    # calculate the instantaneous speed
-    hertz = 1000.0000 / pinDelta
-    flow = hertz / (60 * 7.5) # L/s
-    litersPoured += flow * (pinDelta / 1000.0000)
+	# calculate the instantaneous speed
+	hertz = 1000.0000 / pinDelta
+	flow = hertz / (60 * 7.5) # L/s
+	litersPoured += flow * (pinDelta / 1000.0000)
 
-    return litersPoured
+	return litersPoured
 
-    
+ def send2slack()
 
 
 
