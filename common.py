@@ -154,14 +154,9 @@ def read_flow(seconds=30,pin=22, disp=False):
 		deltaSeconds = now - startTime
 		
 		if disp: print('%s seconds: %s liters'%(round(deltaSeconds,3),round(litersPoured,2)))
-
-
-	if litersPoured == 0: # if there are no counts:
-		return 0
-	else: # calculate the instantaneous speed
 		
-		if disp: print(litersPoured)
-		return litersPoured
+	if disp: print(round(litersPoured,2))
+	return litersPoured
 
 #def send2slack():
 
