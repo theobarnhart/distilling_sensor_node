@@ -129,7 +129,7 @@ def read_flow(seconds=30,pin=22, disp=False):
 
 	lastTime = time.time()
 	startTime = lastTime # save start time
-	print("Starting Count")
+	if disp: print("Starting Count")
 	while deltaSeconds <= seconds:
 		currentTime = int(time.time() * 1000)
 		if GPIO.input(pin):
@@ -147,6 +147,7 @@ def read_flow(seconds=30,pin=22, disp=False):
 
 		now = time.time()
 		deltaSeconds = startTime - now
+		if disp: print(deltaSeconds)
 
 	# calculate the instantaneous speed
 	hertz = 1000.0000 / pinDelta
