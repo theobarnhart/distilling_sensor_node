@@ -169,7 +169,7 @@ def read_atm():
 	ccs811 = adafruit_ccs811.CCS811(i2c)
 	# Wait for the sensor to be ready and calibrate the thermistor
 	while not ccs811.data_ready:
-        pass
+    	pass
 	
 	temp = ccs811.temperature # deg C
 	voc = ccs811.tvoc # PPM
