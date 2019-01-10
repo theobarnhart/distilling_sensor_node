@@ -167,10 +167,9 @@ def read_flow(seconds=30,pin=22, disp=False):
 def read_atm():
 	i2c = busio.I2C(board.SCL, board.SDA)
 	ccs811 = adafruit_ccs811.CCS811(i2c)
-	# Wait for the sensor to be ready and calibrate the thermistor
-	while not ccs811.data_ready:
-    	pass
 	
+	while not ccs811.data_ready: pass # Wait for the sensor to be ready and calibrate the thermistor
+
 	temp = ccs811.temperature # deg C
 	voc = ccs811.tvoc # PPM
 	eco2 = ccs811.eco2 # PPM
@@ -210,23 +209,15 @@ def initializeGsheet(googleAPI_key, sheetCode):
 	"""
 
 	scope = ['https://spreadsheets.google.com/feeds',
-         'https://www.googleapis.com/auth/drive']
+	'https://www.googleapis.com/auth/drive']
 
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(googleAPI_key, scope)
+	credentials = ServiceAccountCredentials.from_json_keyfile_name(googleAPI_key, scope)
 
 	gc = gspread.authorize(credentials)
 
 	Sheet = gc.open_by_key(sheetCode).sheet1
 
 	return Sheet
-
-def insertGsheet(Sheet, time, UpperTemp, LowerTemp, flow, voc):
-
-	data = [time, UpperTemp, LowerTemp, flow, voc]
-
-	Sheet.append_row(data, value_input_option="USER_ENTERED")
-
-	return None
 
 
 

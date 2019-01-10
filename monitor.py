@@ -1,3 +1,11 @@
+"""
+Script to run the monitoring script and insert the data into the gsheet.
+
+Things that occur:
+- update temperature display every 30 seconds w/ instantaneous values
+- every 15 minutes update temperature, flow, voc to gsheet
+"""
+
 from common import *
 import board
 import time
@@ -6,8 +14,7 @@ import numpy as np
 # parameters
 upperPin = board.D5
 lowerPin = board.D6
-#lowerPin = board.D6?
-db = '/home/pi/distDat.db'
+
 upperTemp = 'upperTemp'
 lowerTemp = 'lowerTemp'
 fontsize=18
@@ -20,6 +27,10 @@ lower = []
 
 upper2 = []
 lower2 = []
+
+time.strftime('%y-%m-%d %HH:%MM:%SS',time.localtime()) # print localtime 
+time.strftime('%S',time.localtime()) # print local seconds
+
 while True:
     upperT = read_temperature(upperPin)
     lowerT = read_temperature(lowerPin)
