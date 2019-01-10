@@ -15,6 +15,9 @@ import time
 import os
 from slackclient import SlackClient
 
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+
 def read_temperature(pin,wires=3):
     '''
     Inputs:
@@ -194,6 +197,46 @@ def send2slack(message, channel):
   		channel=channel,
   		text=message
 	)
+
+def initializeGsheet(googleAPI_key, sheetCode):
+	"""
+	Initialize the Google Sheet.
+
+	Inputs:
+		googleAPI_key [path] - path to the google API JSON file
+		sheetCode [string] - code to identify the sheet you want to access
+
+	Outputs:
+		Sheet [object] - google sheet that has been accessed
+	"""
+
+	scope = ['https://spreadsheets.google.com/feeds',
+         'https://www.googleapis.com/auth/drive']
+
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(googleAPI_key, scope)
+
+	gc = gspread.authorize(credentials)
+
+	Sheet = gc.open_by_key(sheetCode).sheet1
+
+	return Sheet
+
+def insertGsheet(Sheet, time, UpperTemp, LowerTemp, flow, voc):
+
+	# figure out the length of the sheet...
+	n = lastRow
+
+	Sheet.update_cell(n,1,time)
+	Sheet.update_cell(n,2,UpperTemp)
+	Sheet.update_cell(n,3,LowerTemp)
+	Sheet.update_cell(n,4,flow)
+	Sheet.update_cell(n,2,voc)
+
+	return None
+
+def closeGsheet(Sheet):
+
+	return None
 
 
 
