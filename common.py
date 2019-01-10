@@ -223,18 +223,9 @@ def initializeGsheet(googleAPI_key, sheetCode):
 
 def insertGsheet(Sheet, time, UpperTemp, LowerTemp, flow, voc):
 
-	# figure out the length of the sheet...
-	n = lastRow
+	data = [time, UpperTemp, LowerTemp, flow, voc]
 
-	Sheet.update_cell(n,1,time)
-	Sheet.update_cell(n,2,UpperTemp)
-	Sheet.update_cell(n,3,LowerTemp)
-	Sheet.update_cell(n,4,flow)
-	Sheet.update_cell(n,2,voc)
-
-	return None
-
-def closeGsheet(Sheet):
+	Sheet.append_row(data, value_input_option="USER_ENTERED")
 
 	return None
 
