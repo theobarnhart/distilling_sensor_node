@@ -196,7 +196,7 @@ def send2slack(message, channel):
   		text=message
 	)
 
-def initializeGsheet(googleAPI_key, sheetCode):
+def initializeGsheet(gc, key):
 	"""
 	Initialize the Google Sheet.
 
@@ -208,6 +208,11 @@ def initializeGsheet(googleAPI_key, sheetCode):
 		Sheet [object] - google sheet that has been accessed
 	"""
 
+	Sheet = gc.open_by_key(key).sheet1
+
+	return Sheet
+
+def initializeGspread(googleAPI_key):
 	scope = ['https://spreadsheets.google.com/feeds',
 	'https://www.googleapis.com/auth/drive']
 
@@ -215,9 +220,49 @@ def initializeGsheet(googleAPI_key, sheetCode):
 
 	gc = gspread.authorize(credentials)
 
-	Sheet = gc.open_by_key(sheetCode).sheet1
+	return gc
 
-	return Sheet
+def makeSheet(gc,time,emails):
+	"""
+	make a spreadsheet based on the time 
+	"""
+	sh = gc.create('gulch_distilling_%s'%(time.strftime('%y_%m_%d'))) # create new spreadsheet
+	key = sh.fetch_sheet_metadata()['spreadsheetId']
+	url = sh.fetch_sheet_metadata()['spreadsheetUrl']
+
+	for email in emails:
+		sh.share(email, perm_type='user', role='writer')
+
+	wks = sh.sheet1
+
+	wks.append_row(['datetime','upperT','lowerT','flow','voc']) # make the table header
+
+	return key,url
+
+def warning_system(data, limits):
+	"""
+	Warn Steffen and Terrel if the flow stops or the temperature is too hot.
+	
+	Inputs:
+		data
+
+	Outputs:
+		Slack messages or nothing if all is well.
+
+	"""
+
+	datetime,upperT,lowerT,flow,voc = data
+
+	upperLim,lowerLim,flowLim,vocLim = limits
+
+	if lowerT > lowerLim | upperT > upperLim:
+
+	if flow < flowLim:
+
+
+	pass
+
+
 
 
 
