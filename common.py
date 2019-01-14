@@ -222,11 +222,11 @@ def initializeGspread(googleAPI_key):
 
 	return gc
 
-def makeSheet(gc,time,emails):
+def makeSheet(gc,time,config):
 	"""
 	make a spreadsheet based on the time 
 	"""
-	sh = gc.create('gulch_distilling_%s'%(time.strftime('%y_%m_%d'))) # create new spreadsheet
+	sh = gc.create('%s_%s'%(config.datasheet_prefix,time.strftime(config.datasheet_appendix))) # create new spreadsheet
 	key = sh.fetch_sheet_metadata()['spreadsheetId']
 	url = sh.fetch_sheet_metadata()['spreadsheetUrl']
 
@@ -256,16 +256,58 @@ def warning_system(data, limits):
 	upperLim,lowerLim,flowLim,vocLim = limits
 
 	if lowerT > lowerLim | upperT > upperLim:
-
+		pass
 	if flow < flowLim:
+		pass
 
+class configuration:
+	"""
+	Generate a configuration class to parameterize the program.
 
-	pass
+	Inputs:
+		configFile [path] - path to the configuration yaml file.
 
+	Outputs:
+		config [object] 
+	"""
+	def __init__(self, configFile):
+		import yaml
 
+		with open(configFile, 'r') as stream:
+			try:
+				params = yaml.load(stream)
+			except yaml.YAMLError as exc:
+				print(exc)
 
+		self.people = params['Notifications']['Names']['People'] # pull the names of people
+		self.channels = params['Notifications']['Names']['Channels'] # pull the names of the slack channels
 
+		self.peopleData = params['Notifications']['People']
+		self.channelData = params['Notifications']['Channels']
 
+		assert len(self.peopleData) == len(self.people), 'People listed and supplied data are different lengths.'
+		assert len(self.channelData) == len(self.channels), 'Channels listed and supplied data are different lengths.'
 
+		self.parameters = params['Parameters']
 
+		self.display_update = self.parameters['display_update']
+		self.data_log_interval = self.parameters['data_log_interval']
+		self.datasheet_prefix = self.parameters['datasheet_prefix']
+		self.datasheet_appendix = self.parameters['datasheet_appendix']
+		self.Tunits = self.parameters['Tunits']
+		self.upperT_limit = self.parameters['upperT_limit']
+		self.lowerT_limit = self.parameters['lowerT_limit']
+		self.flow_limit = self.parameters['flow_limit']
+		self.alert_limit = self.parameters['alert_limit']
+		self.shareData = self.parameters['shareData']
+		self.fontsize = self.parameters['fontsize']
+		self.googleAPI_key = self.parameters['googleAPI_key']
 
+		# generate a list of emails to share spreadsheed with
+		emails = []
+		for name in self.shareData:
+			emails.append(self.peopleData[name]['email']
+
+		self.alertEmails = emails
+
+		self.rawParams = params
