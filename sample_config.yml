@@ -39,3 +39,4 @@ Parameters:
   shareData: ['Theo'] # people, detailed above, to share data with
   fontsize: 18 # display font size.
   googleAPI_key: 'path_to_credentials_json_file' # path to google sheets API 
+  alertPeople: ['Theo'] # names of people, detailed above, to alert if an alert is triggered.
