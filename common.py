@@ -164,7 +164,8 @@ def read_flow(seconds=30,pin=22, disp=False):
 		if disp: print('%s seconds: %s liters'%(round(deltaSeconds,3),round(litersPoured,2)))
 		
 	if disp: print(round(litersPoured,2))
-	return litersPoured
+	# return litersPoured
+	return flow # in L/s
 
 def read_atm():
 	i2c = busio.I2C(board.SCL, board.SDA)
@@ -238,11 +239,11 @@ def makeSheet(gc,time,config):
 
 	wks = sh.sheet1
 
-	wks.append_row(['datetime','upperT','lowerT','flow','voc']) # make the table header
+	wks.append_row(config.datasheetCols) # make the table header
 
 	return key,url
 
-def warning_system(data, limits, lastTime, config):
+def warning_system(data, lastTime, config):
 	"""
 	Warn Steffen and Terrel if the flow stops or the temperature is too hot.
 	
@@ -257,22 +258,28 @@ def warning_system(data, limits, lastTime, config):
 
 	"""
 
-	datetime,upperT,lowerT,flow,voc = data # unpack data
+	fmtTime,upperT,lowerT,flow,voc,eco2 = data # unpack data
 
-	if (datetime - lasttime).minutes < config.alert_limit:
+	# convert datetime string to datetime object
+
+	t = datetime.datetime.strptime(fmtTime, config.time_fmt)
+
+	td = t - lastTime
+	minutes = td.seconds/60.
+	if minutes < config.alert_limit:
 		return lastTime # if not enough time has elapsed, return the last time.
 	else:
 		if lowerT > config.lowerT_limit| upperT > config.upperT_limit:
-		message = 'Temperature Alert!\n\nUpper T: %s %s\nLower T: %s %s'%(upperT,config.Tunits,lowerT,config.Tunits)
+			message = 'Temperature Alert!\n\nUpper T: %s %s\nLower T: %s %s'%(upperT,config.Tunits,lowerT,config.Tunits)
 
 			for webhook in config.alertWebhooks:
-				send2slack()
+				send2slack(message,webhook)
 
 		if flow < flowLim:
-			pass
+			message = 'Coolant Flow Alert!\n\nFlow: %s %s'%(flow,config.flowUnits)
 
-	
-
+			for webhook in config.alertWebhooks:
+				send2slack(message,webhook)
 	
 
 class configuration:
@@ -320,11 +327,14 @@ class configuration:
 		self.googleAPI_key = self.parameters['googleAPI_key']
 		self.alertPeople = self.parameters['alertPeople']
 		self.statusUpdate = self.parameters['statusUpdate']
+		self.datasheetCols = self.parameters['datasheetCols']
+		self.time_fmt = self.params['time_fmt']
 
 		# generate a list of emails to share spreadsheed with
 		emails = []
 		for name in self.shareData:
-			emails.append(self.peopleData[name]['email'])
+			try:
+				emails.append(self.peopleData[name]['email'])
 
 		self.alertEmails = emails
 
@@ -332,7 +342,10 @@ class configuration:
 		alertWebhooks = []
 
 		for name in self.alertPeople:
-			alertWebhooks.append(self.peopleData[name]['key'])
+			try:
+				alertWebhooks.append(self.peopleData[name]['key']) # look in the people data
+			try:
+				alertWebhooks.append(self.channelData[name]['key']) # look in the channel data
 
 		self.alertWebhooks = alertWebhooks
 
@@ -340,7 +353,10 @@ class configuration:
 		notifyWebhooks = []
 
 		for name in self.statusUpdate:
-			notifyWebhooks.append(self.peopleData[name]['key'])
+			try:
+				notifyWebhooks.append(self.peopleData[name]['key'])
+			try:
+				notifyWebhooks.append(self.channelData[name]['key'])
 
 		self.notifyWebhooks = notifyWebhooks
 

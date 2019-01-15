@@ -30,8 +30,9 @@ Parameters:
   display_update: [0,30] # interval to update the display
   data_log_interval: [0,15,30,45] # interval to log the data
   datasheet_prefix: sample_filename # first part of the google sheet name
-  datasheet_appendix: '%y%m%d_%h%m' # last part of the google sheet name
+  datasheet_appendix: '%Y%m%d_%h%m' # last part of the google sheet name
   Tunits: 'C' # temperature units 
+  flowUnits: 'L/s'  # flow units 
   upperT_limit: 90 # upper sensor temperature limit to trigger alarm
   lowerT_limit: None # lower sensor temperature limit to trigger alarm
   flow_limit: 10 # flow limit to trigger alarm
@@ -39,4 +40,7 @@ Parameters:
   shareData: ['Theo'] # people, detailed above, to share data with
   fontsize: 18 # display font size.
   googleAPI_key: 'path_to_credentials_json_file' # path to google sheets API 
-  alertPeople: ['Theo'] # names of people, detailed above, to alert if an alert is triggered.
+  alertPeople: ['Theo'] # names of people, detailed above, to alert if an alert is triggered. Can be people or channels.
+  statusUpdate: ['Theo'] # names of people, detailed above, to notify when a distillation starts. Can be people or channels.
+  datasheetCols: ['datetime','upperT','lowerT','flow','voc','eco2'] # columns to create in the google sheet
+  time_fmt: '%Y-%m-%d %H:%M:%S' # time format to use with datalogging
