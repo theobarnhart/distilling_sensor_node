@@ -13,7 +13,9 @@ from PIL import ImageFont
 import RPi.GPIO as GPIO
 import time
 import os
-from slackclient import SlackClient
+import json
+import requests
+#from slackclient import SlackClient
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -176,25 +178,26 @@ def read_atm():
 
 	return temp,voc,eco2
 
-def send2slack(message, channel):
+def send2slack(message, webhook):
 	'''
-	Sends a message to slack given an api token in the environment variable
+	Sends a message to slack 
 	
 	Inputs:
 		message - message to post to channel (string)
-		channel - channel to post to (string)
+		webhook - webhook to post to (string)
 
 	Returns:
 		None
 	'''
-	slack_token = os.environ["SLACK_API_TOKEN"]
-	sc = SlackClient(slack_token)
+	slack_data = {'text':message}
 
-	sc.api_call(
-  		"chat.postMessage",
-  		channel=channel,
-  		text=message
-	)
+	response = requests.post(webhook, data = json.dumps(slack_data),
+				headers = {'Content-Type':'application/json'})
+
+	if response.status_code != 200:
+		raise ValueError(
+			'Request to slack returned an error %s, the response is:\n%s'
+			% (response.status_code, response.text))
 
 def initializeGsheet(gc, key):
 	"""
@@ -239,26 +242,38 @@ def makeSheet(gc,time,config):
 
 	return key,url
 
-def warning_system(data, limits):
+def warning_system(data, limits, lastTime, config):
 	"""
 	Warn Steffen and Terrel if the flow stops or the temperature is too hot.
 	
 	Inputs:
 		data
+		limits
+		lastTime [datetime] - when the last alert was issued
+		config [configuration object] - holds all the lists etc...
 
 	Outputs:
 		Slack messages or nothing if all is well.
 
 	"""
 
-	datetime,upperT,lowerT,flow,voc = data
+	datetime,upperT,lowerT,flow,voc = data # unpack data
 
-	upperLim,lowerLim,flowLim,vocLim = limits
+	if (datetime - lasttime).minutes < config.alert_limit:
+		return lastTime # if not enough time has elapsed, return the last time.
+	else:
+		if lowerT > config.lowerT_limit| upperT > config.upperT_limit:
+		message = 'Temperature Alert!\n\nUpper T: %s %s\nLower T: %s %s'%(upperT,config.Tunits,lowerT,config.Tunits)
 
-	if lowerT > lowerLim | upperT > upperLim:
-		pass
-	if flow < flowLim:
-		pass
+			for webhook in config.alertWebhooks:
+				send2slack()
+
+		if flow < flowLim:
+			pass
+
+	
+
+	
 
 class configuration:
 	"""
@@ -295,6 +310,7 @@ class configuration:
 		self.datasheet_prefix = self.parameters['datasheet_prefix']
 		self.datasheet_appendix = self.parameters['datasheet_appendix']
 		self.Tunits = self.parameters['Tunits']
+		self.flowUnits = self.parameters['flowUnits']
 		self.upperT_limit = self.parameters['upperT_limit']
 		self.lowerT_limit = self.parameters['lowerT_limit']
 		self.flow_limit = self.parameters['flow_limit']
@@ -302,12 +318,30 @@ class configuration:
 		self.shareData = self.parameters['shareData']
 		self.fontsize = self.parameters['fontsize']
 		self.googleAPI_key = self.parameters['googleAPI_key']
+		self.alertPeople = self.parameters['alertPeople']
+		self.statusUpdate = self.parameters['statusUpdate']
 
 		# generate a list of emails to share spreadsheed with
 		emails = []
 		for name in self.shareData:
-			emails.append(self.peopleData[name]['email']
+			emails.append(self.peopleData[name]['email'])
 
 		self.alertEmails = emails
+
+		# generate a list of webhooks to alert people
+		alertWebhooks = []
+
+		for name in self.alertPeople:
+			alertWebhooks.append(self.peopleData[name]['key'])
+
+		self.alertWebhooks = alertWebhooks
+
+		# generate a list of webhooks to notify people that a distillation is starting
+		notifyWebhooks = []
+
+		for name in self.statusUpdate:
+			notifyWebhooks.append(self.peopleData[name]['key'])
+
+		self.notifyWebhooks = notifyWebhooks
 
 		self.rawParams = params
