@@ -1,0 +1,41 @@
+#####################################################
+#         Sample configuration file.                #
+# Remove all comments starting with "#" before use. #
+#                                                   #
+#####################################################
+
+Notifications:
+  Names:
+    People: # list people that will be detailed below
+      - Adam
+      - Eve
+    Channels: # list channels that will be detailed below
+      - Garden
+  People: # people nest under people
+    Adam: # name the dictionary the name of the person to be detailed
+      Name: Adam
+      Key: None # slack webhooks key for adam
+      email: Adam@eden.com
+    Eve:
+      Name: Eve
+      Key: None # slack webhooks key for eve
+      email: eve@eden.com
+  Channels: # channels nest under channels
+    Garden:
+      Name: Garden
+      Key: None # slack webhooks key for garden
+      email: None
+
+Parameters:
+  display_update: [0,30] # interval to update the display
+  data_log_interval: [0,15,30,45] # interval to log the data
+  datasheet_prefix: sample_filename # first part of the google sheet name
+  datasheet_appendix: '%y%m%d_%h%m' # last part of the google sheet name
+  Tunits: 'C' # temperature units 
+  upperT_limit: 90 # upper sensor temperature limit to trigger alarm
+  lowerT_limit: None # lower sensor temperature limit to trigger alarm
+  flow_limit: 10 # flow limit to trigger alarm
+  alert_limit: 30 # number of minutes to wait before sending another alarm
+  shareData: ['Theo'] # people, detailed above, to share data with
+  fontsize: 18 # display font size.
+  googleAPI_key: 'path_to_credentials_json_file' # path to google sheets API 
