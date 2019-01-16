@@ -354,6 +354,7 @@ class configuration:
 		self.statusUpdate = self.parameters['statusUpdate']
 		self.datasheetCols = self.parameters['datasheetCols']
 		self.time_fmt = self.parameters['time_fmt']
+		self.node_name = self.parameters['node_name']
 
 		# generate a list of emails to share spreadsheed with
 		emails = []
