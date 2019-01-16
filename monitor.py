@@ -5,64 +5,88 @@ Things that occur:
 - update temperature display every 30 seconds w/ instantaneous values
 - every 15 minutes update temperature, flow, voc to gsheet
 """
+try:
+    from common import *
+    import board
+    import time
+    import numpy as np
+    import sys
+    import datetime
+except:
+    print('Imports Failed!')
 
-from common import *
-import board
-import time
-import numpy as np
-import sys
-import datetime
+try:
+    configFile = sys.argv[1]
 
-configFile = sys.argv[1]
+    debug = False
+    if len(sys.argv) == 3:
+        debug = sys.argv[2]
 
-# load the configuration file:
-config = configuration(configFile)
+    # load the configuration file:
+    config = configuration(configFile)
+except:
+    print('Configuration Failed!')
 
-# Wiring parameters, do not change without rewiring!
-upperPin = board.D5
-lowerPin = board.D6
+try:
+    # Wiring parameters, do not change without rewiring!
+    upperPin = board.D5
+    lowerPin = board.D6
 
-disp,draw,font,width,height,image = initialize_display(config.fontsize)
+    disp,draw,font,width,height,image = initialize_display(config.fontsize)
 
-# create a new spreadsheet based on the date...
-gc = initializeGspread(config.googleAPI_key)
-key,url = makeSheet(gc,time.localtime(),config)
+    # take a reading and turn the display on 
+    upperT = read_temperature(upperPin)
+    lowerT = read_temperature(lowerPin)
+    print_message(["U: %s"%(round(upperT,1)),"L: %s"%(round(lowerT,1))],disp,draw,font,width,height,image)
 
-for webhook in config.notifyWebhooks:
-    send2slack('A Distillation has begun. Data can be found at: %s'%(url), webhook)
+    # create a new spreadsheet based on the date...
+    gc = initializeGspread(config.googleAPI_key)
+    key,url = makeSheet(gc,time.localtime(),config)
 
-lastAlert = datetime.datetime.fromtimestamp(time.mktime(time.localtime())) # initialize the last alert time
+    for webhook in config.notifyWebhooks:
+        send2slack('A Distillation has begun. Data can be found at: %s'%(url), webhook)
+
+    lastAlert = datetime.datetime.fromtimestamp(time.mktime(time.localtime())) # initialize the last alert time
+
+    if debug: print('Initialization Complete')
+except:
+    print('Initialization Failed!')
 
 while True: # run the monitoring function
+    try:
+        localtime = time.localtime()
+        seconds = time.strftime('%S', localtime) # compute seconds integer
+        minutes = time.strftime('%M', localtime) # compute minutes integer
+        now = datetime.datetime.fromtimestamp(time.mktime(localtime)) # convert to datetime
+        #if debug: print('%s:%s'%(minutes,seconds))
 
-    localtime = time.localtime()
-    seconds = time.strftime('%S', localtime) # compute seconds integer
-    minutes = time.strftime('%M', localtime) # compute minutes integer
-    now = datetime.datetime.fromtimestamp(time.mktime(localtime)) # convert to datetime
-
-    if any(seconds == x for x in config.display_update): # run the loop on 30 second intervals
-        
-        # read the upper and lower temperatures and display
-        upperT = read_temperature(upperPin)
-        lowerT = read_temperature(lowerPin)
-
-        print_message(["U: %s"%(round(upperT,1)),"L: %s"%(round(lowerT,1))],disp,draw,font,width,height,image)
-        
-        if any(minutes == x for x in config.data_log_interval): # print values to the spreadsheet 
-
-            fmtTime = time.strftime(config.time_fmt,localtime)
-            temp,voc,eco2 = read_atm() 
-            flow = read_flow()
-
-            data = [fmtTime, upperT, lowerT, flow, voc, eco2] # data for google sheets
+        if any(int(seconds) == x for x in config.display_update): # run the loop on 30 second intervals
             
-            sheet = initializeGsheet(gc,key)
-            sheet.append_rows(data, value_input_option="USER_ENTERED")
+            if debug: print('Updating Display.')
+            # read the upper and lower temperatures and display
+            upperT = read_temperature(upperPin)
+            lowerT = read_temperature(lowerPin)
 
-            del sheet
+            print_message(["U: %s"%(round(upperT,1)),"L: %s"%(round(lowerT,1))],disp,draw,font,width,height,image)
+            
+            if any(int(minutes) == x for x in config.data_log_interval): # print values to the spreadsheet 
+                if debug: print('Logging Data.')
 
-            # run the warning system here!
-            warning_system(data, lastAlert, config)
-    
-    time.sleep(1) # pause for 1 second
+                fmtTime = time.strftime(config.time_fmt,localtime)
+                temp,voc,eco2 = read_atm() 
+                flow = read_flow()
+
+                data = [fmtTime, upperT, lowerT, flow, voc, eco2] # data for google sheets
+                
+                sheet = initializeGsheet(gc,key)
+                sheet.append_row(data, value_input_option="USER_ENTERED")
+
+                del sheet
+
+                # run the warning system here!
+                warning_system(data, lastAlert, config)
+        
+        time.sleep(0.4) # pause for 1 second
+    except:
+        pass
     

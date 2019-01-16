@@ -34,7 +34,7 @@ Parameters:
   Tunits: 'C' # temperature units 
   flowUnits: 'L/s'  # flow units 
   upperT_limit: 90 # upper sensor temperature limit to trigger alarm
-  lowerT_limit: None # lower sensor temperature limit to trigger alarm
+  lowerT_limit: 120 # lower sensor temperature limit to trigger alarm, set high if you want the error to trigger on the upper temperature sensor.
   flow_limit: 10 # flow limit to trigger alarm
   alert_limit: 30 # number of minutes to wait before sending another alarm
   shareData: ['Theo'] # people, detailed above, to share data with
