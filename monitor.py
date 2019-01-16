@@ -1,3 +1,4 @@
+#! /bin/python
 """
 Script to run the monitoring script and insert the data into the gsheet.
 
@@ -76,7 +77,7 @@ while True: # run the monitoring function
                 temp,voc,eco2 = read_atm() 
                 flow = read_flow()
 
-                data = [fmtTime, upperT, lowerT, flow, voc, eco2] # data for google sheets
+                data = [fmtTime, round(upperT,2), round(lowerT,2), round(flow,2), round(voc,2), round(eco2,2)] # data for google sheets
                 
                 sheet = initializeGsheet(gc,key)
                 sheet.append_row(data, value_input_option="USER_ENTERED")

@@ -291,7 +291,7 @@ def warning_system(data, lastTime, config):
 			for webhook in config.alertWebhooks:
 				send2slack(message,webhook)
 
-		if flow < config.flow_limit:
+		if flow < config.flow_limit and flow != -9999:
 			message = 'Coolant Flow Alert!\n\nFlow: %s %s'%(flow,config.flowUnits)
 
 			for webhook in config.alertWebhooks:
