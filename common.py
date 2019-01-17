@@ -85,7 +85,7 @@ def initialize_display(fontSize):
 		
 		return disp,draw,font,width,height,image
 	except:
-		pass
+		raise
 
 def print_message(message,disp,draw,font,width,height,image):
 	'''
@@ -115,7 +115,7 @@ def print_message(message,disp,draw,font,width,height,image):
 		disp.image(image)
 		disp.display()
 	except:
-		pass
+		raise
 	
 def read_flow(seconds=30,pin=22, disp=False):
 	'''
@@ -357,6 +357,8 @@ class configuration:
 		self.node_name = self.parameters['node_name']
 		self.logPath = self.parameters['logPath']
 		self.logName = self.parameters['logName']
+		self.runProgram = self.parameters['runProgram']
+		self.debug = self.parameters['debug']
 
 		# generate a list of emails to share spreadsheed with
 		emails = []
