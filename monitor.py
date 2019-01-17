@@ -14,6 +14,8 @@ try:
     import sys
     import datetime
     import logging
+
+    time.sleep(45)
 except:
     print('Imports Failed!')
     raise
@@ -120,7 +122,8 @@ while True: # run the monitoring function
 
                         try:
                             # run the warning system here!
-                            warning_system(data, lastAlert, config)
+                            if config.sendAlerts:
+                                warning_system(data, lastAlert, config)
                         except:
                             logging.debug('Warning system failure.')
 

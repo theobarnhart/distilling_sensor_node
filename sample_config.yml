@@ -49,3 +49,4 @@ Parameters:
   logName: 'distillation' # first part of the logfile name, the second part will be the datasheet_appendix variable
   runProgram: True # run the program
   debug: True # debug the script
+  sendAlerts: True # send alerts, False if no alerts.

@@ -359,6 +359,7 @@ class configuration:
 		self.logName = self.parameters['logName']
 		self.runProgram = self.parameters['runProgram']
 		self.debug = self.parameters['debug']
+		self.sendAlerts = self.parameters['sendAlerts']
 
 		# generate a list of emails to share spreadsheed with
 		emails = []
