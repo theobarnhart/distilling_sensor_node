@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 # This script will wait for a button to be pressed and then shutdown
 # the Raspberry Pi.
 # The button is to be connected on header 5 between pins 6 and 8.
@@ -10,7 +10,7 @@
 import RPi.GPIO as GPIO
 import os
 import sys
-from common import send2slack, configuration
+from common import *
 
 pin = 23
 
@@ -29,17 +29,14 @@ GPIO.setup(pin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 # ISR: if our button is pressed, we will have a falling edge on pin 31
 # this will trigger this interrupt:
 
-for webhook in config.notifyWebhooks:
-        send2slack('A Distillation has begun. Data can be found at: %s'%(url), webhook)
-
 def Int_shutdown(config): 
 	try:
 		for webhook in config.notifyWebhooks:
-		send2slack('%s has been shutdown. Remove power in 1 minute.'%(config.node_name), webhook)
+		 	send2slack('%s has been shutdown. Remove power in 1 minute.'%(config.node_name), webhook)
 	except:
 		pass
     # shutdown Raspberry Pi
-    os.system("sudo shutdown -h now")
+	os.system("sudo shutdown -h now")
 
 # Now we are programming pin 31 as an interrupt input
 # it will react on a falling edge and call our interrupt routine "Int_shutdown"

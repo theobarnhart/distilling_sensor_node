@@ -1,25 +1,25 @@
+#! /usr/bin/python3
 # common functions to use
 
 import board
 import busio
 import digitalio
-import sqlite3
 import adafruit_max31865
 import adafruit_ccs811
 import Adafruit_SSD1306
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
 import RPi.GPIO as GPIO
 import time
 import os
 import json
 import requests
 import datetime
-#from slackclient import SlackClient
-
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import yaml
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
+
 
 def read_temperature(pin,wires=3):
 	'''
