@@ -355,6 +355,8 @@ class configuration:
 		self.datasheetCols = self.parameters['datasheetCols']
 		self.time_fmt = self.parameters['time_fmt']
 		self.node_name = self.parameters['node_name']
+		self.logPath = self.parameters['logPath']
+		self.logName = self.parameters['logName']
 
 		# generate a list of emails to share spreadsheed with
 		emails = []

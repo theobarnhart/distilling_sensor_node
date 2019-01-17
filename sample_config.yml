@@ -44,3 +44,6 @@ Parameters:
   statusUpdate: ['Theo'] # names of people, detailed above, to notify when a distillation starts. Can be people or channels.
   datasheetCols: ['datetime','upperT','lowerT','flow','voc','eco2'] # columns to create in the google sheet
   time_fmt: '%Y-%m-%d %H:%M:%S' # time format to use with datalogging
+  node_name: kumquat # name of the sensor node
+  logPath: './logs' # path to store log files
+  logName: 'distillation' # first part of the logfile name, the second part will be the datasheet_appendix variable
