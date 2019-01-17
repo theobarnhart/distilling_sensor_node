@@ -15,7 +15,7 @@ try:
     import datetime
     import logging
 
-    time.sleep(45)
+    time.sleep(60) # delay to let the internet connect
 except:
     print('Imports Failed!')
     raise
