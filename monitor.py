@@ -15,7 +15,6 @@ try:
     import datetime
     import logging
 
-    time.sleep(60) # delay to let the internet connect
 except:
     print('Imports Failed!')
     raise
@@ -29,6 +28,8 @@ try:
 except:
     print('Configuration Failed!')
     raise
+
+time.sleep(config.delay) # delay to let the internet connect
 
 if not config.runProgram:
     print('Exiting Program.')
@@ -113,19 +114,20 @@ while True: # run the monitoring function
                             logging.debug('Additional data acquisition failed.')
                             raise 
                         try:
+                            gc = initializeGspread(config.googleAPI_key)
                             sheet = initializeGsheet(gc,key)
                             sheet.append_row(data, value_input_option="USER_ENTERED")
 
                             del sheet
                         except:
-                            logging.debug('Datalogging failure.')
+                            logging.info('Datalogging failure.')
 
                         try:
                             # run the warning system here!
                             if config.sendAlerts:
                                 warning_system(data, lastAlert, config)
                         except:
-                            logging.debug('Warning system failure.')
+                            logging.info('Warning system failure.')
 
                         try: # update configuration
                             config = configuration(configFile)
@@ -136,9 +138,9 @@ while True: # run the monitoring function
                     else: 
                         pass
             except:
-                logging.debug('Display loop failure.')
+                logging.info('Display loop failure.')
         
         time.sleep(0.4) # pause for 1 second
     except:
-        logging.debug('Main loop failure.')
+        logging.info('Main loop failure.')
     

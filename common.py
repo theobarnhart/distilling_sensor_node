@@ -360,6 +360,7 @@ class configuration:
 		self.runProgram = self.parameters['runProgram']
 		self.debug = self.parameters['debug']
 		self.sendAlerts = self.parameters['sendAlerts']
+		self.delay = self.parameters['delay']
 
 		# generate a list of emails to share spreadsheed with
 		emails = []
