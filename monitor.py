@@ -50,6 +50,7 @@ try: # setup logging:
 		logging.basicConfig(format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',filename=logFile,level=logging.INFO)
 	logging.info('Logging initiated.')
 except Exception as e:
+	logging.info('Logging failed.')
 	print('Logging failed.')
 	print(e)
 	print(traceback.format_exc())
@@ -67,6 +68,7 @@ try:
 	print_message(["U: %s"%(round(upperT,1)),"L: %s"%(round(lowerT,1))],disp,draw,font,width,height,image)
 
 	# create a new spreadsheet based on the date...
+	gcTime = time.localtime() # get the time the gc was created
 	gc = initializeGspread(config.googleAPI_key)
 	key,url = makeSheet(gc,time.localtime(),config)
 
@@ -137,7 +139,9 @@ while True: # run the monitoring function
 							print(traceback.format_exc())
 
 						try:
-							gc.login()
+							if (time.localtime() - gcTime)/60. > 55: # if its been about an hour, get new credentials 
+								gcTime = time.localtime() # replace gcTime with current time
+								gc.login() # update credentials
 							sheet = initializeGsheet(gc,key)
 							sheet.append_row(data, value_input_option="USER_ENTERED")
 							del sheet
