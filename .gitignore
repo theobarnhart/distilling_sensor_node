@@ -1,3 +1,6 @@
 config.yml
 config/
 *dbc63831d4a4.json
+logs/
+__pycache__/
+*.pyc
