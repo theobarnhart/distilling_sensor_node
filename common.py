@@ -185,15 +185,18 @@ def read_atm():
 		i2c = busio.I2C(board.SCL, board.SDA)
 		ccs811 = adafruit_ccs811.CCS811(i2c)
 		
-		while not ccs811.data_ready: pass # Wait for the sensor to be ready and calibrate the thermistor
+		while not ccs811.data_ready: # Wait for the sensor to be ready and calibrate the thermistor
+			return -9999,-9999,-9999
+		if ccs811.data_ready:	
+			temp = ccs811.temperature # deg C
+			voc = ccs811.tvoc # PPM
+			eco2 = ccs811.eco2 # PPM
 
-		temp = ccs811.temperature # deg C
-		voc = ccs811.tvoc # PPM
-		eco2 = ccs811.eco2 # PPM
-
-		return temp,voc,eco2
-	except:
-		-9999,-9999,-9999
+			return temp,voc,eco2
+	except Exception as e:
+		print("Read atm failed.")
+		print(e)
+		return -9999,-9999,-9999
 
 def send2slack(message, webhook):
 	'''
