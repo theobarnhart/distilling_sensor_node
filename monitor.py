@@ -71,7 +71,7 @@ try:
 	print_message(["U: %s"%(round(upperT,1)),"L: %s"%(round(lowerT,1))],disp,draw,font,width,height,image)
 
 	# create a new spreadsheet based on the date...
-	gcTime = time.localtime() # get the time the gc was created
+	gcTime = time.time() # get the time the gc was created
 	gc = initializeGspread(config.googleAPI_key)
 	key,url = makeSheet(gc,time.localtime(),config)
 
@@ -113,8 +113,6 @@ while True: # run the monitoring function
 	try:
 		if any(int(seconds) == x for x in config.display_update): # Display update loop
 			try:
-				if debug:
-					logging.info('Updating display.')
 				# read the upper and lower temperatures and display
 				upperT = read_temperature(upperPin)
 				lowerT = read_temperature(lowerPin)
@@ -122,13 +120,19 @@ while True: # run the monitoring function
 				#print("Upper Temperature: %f.2"%upperT)
 				#print("Lower Temperature: %f.2"%lowerT)
 				print_message(["U: %s"%(round(upperT,1)),"L: %s"%(round(lowerT,1))],disp,draw,font,width,height,image)
-
+				if debug:
+					logging.info('Display updated.')
+					print('Display updated.')
 				if any(int(minutes) == x for x in config.data_log_interval): # datalogger loop.
 
 					if lastReading != minutes:
 						try:
 							if debug:
 								logging.info('Logging Data.')
+								logging.info('Attempting to read atm and flow sensors.')
+
+								print('Logging Data.')
+								print('Attempting to read atm and flow sensors.')
 
 							fmtTime = time.strftime(config.time_fmt,localtime)
 							temp,voc,eco2 = read_atm()
@@ -165,6 +169,9 @@ while True: # run the monitoring function
 
 						try:
 							data = [fmtTime, round(upperT,2), round(lowerT,2), round(flow,2), round(voc,2), round(eco2,2)] # data for google sheets
+							if debug:
+								print('Data Construct Created.')
+								logging.info('Data Construct Created.')
 						except Exception as e:
 							if debug:
 								logging.info('Data Construct Failed.')
@@ -178,7 +185,11 @@ while True: # run the monitoring function
 						try:
 							if debug:
 								logging.info('Checking gc credential time.')
-							if (time.localtime() - gcTime)/60. > 55: # if its been about an hour, get new credentials 
+								print('Checking gc credential time.')
+							if (time.time() - gcTime)/60. > 55: # if its been about an hour, get new credentials 
+								if debug:
+									logging.info('gc credentials updated.')
+									print('Checking gc credential time.')
 								gcTime = time.localtime() # replace gcTime with current time
 								gc.login() # update credentials
 							sheet = initializeGsheet(gc,key)
@@ -234,7 +245,7 @@ while True: # run the monitoring function
 					print(e)
 					print(traceback.format_exc())
 			
-		time.sleep(0.4) # pause for 1 second
+		time.sleep(0.4) # pause
 	
 	except Exception as e:
 		if debug:
