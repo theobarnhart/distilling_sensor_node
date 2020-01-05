@@ -43,11 +43,7 @@ try: # setup logging:
 		os.makedirs(config.logPath)
 
 	logFile = os.path.join(config.logPath,'%s_%s.log'%(config.logName,time.strftime(config.datasheet_appendix,time.localtime())))
-	
-	if config.debug:
-		logging.basicConfig(format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',filename=logFile,level=logging.DEBUG)
-	else:
-		logging.basicConfig(format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',filename=logFile,level=logging.INFO)
+	logging.basicConfig(format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',filename=logFile,level=logging.INFO)
 	logging.info('Logging initiated.')
 except Exception as e:
 	logging.info('Logging failed.')
@@ -190,7 +186,7 @@ while True: # run the monitoring function
 								if debug:
 									logging.info('gc credentials updated.')
 									print('Checking gc credential time.')
-								gcTime = time.localtime() # replace gcTime with current time
+								gcTime = time.time() # replace gcTime with current time
 								gc.login() # update credentials
 							sheet = initializeGsheet(gc,key)
 							sheet.append_row(data, value_input_option="USER_ENTERED")
