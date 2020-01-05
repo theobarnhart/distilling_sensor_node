@@ -182,10 +182,10 @@ while True: # run the monitoring function
 							if debug:
 								logging.info('Checking gc credential time.')
 								print('Checking gc credential time.')
-							if (time.time() - gcTime)/60. > 55: # if its been about an hour, get new credentials 
+							if (time.time() - gcTime)/60. > 30: # if its been about an hour, get new credentials 
 								if debug:
 									logging.info('gc credentials updated.')
-									print('Checking gc credential time.')
+									print('gc credentials updated.')
 								gcTime = time.time() # replace gcTime with current time
 								gc.login() # update credentials
 							sheet = initializeGsheet(gc,key)
